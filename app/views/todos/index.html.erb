@@ -1,29 +1,39 @@
-<h1>Listing todos</h1>
+<h1>Todos</h1>
+
+<div>
+
+<%= form_for(@new_todo) do |f| %>
+  <% if @new_todo.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@new_todo.errors.count, "error") %> prohibited this todo from being saved:</h2>
+
+      <ul>
+      <% @new_todo.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+    <%= f.label "New To Do" %><br>
+    <%= f.text_field :task, placeholder: "Pick up milk" %>
+    <%= f.hidden_field :done, value: 0 %>
+    <%= f.submit value: "+" %>
+<% end %>
+
+</div>
 
 <table>
-  <thead>
-    <tr>
-      <th>Task</th>
-      <th>Done</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
     <% @todos.each do |todo| %>
       <tr>
         <td><%= todo.task %></td>
-        <td><%= todo.done %></td>
-        <td><%= link_to 'Show', todo %></td>
-        <td><%= link_to 'Edit', edit_todo_path(todo) %></td>
-        <td><%= link_to 'Destroy', todo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>
+          <% if todo.done? %>
+            <td><%= link_to 'Mark Not Done', todo_path(todo, todo: { :done => 0 }), :method => :put %></td>
+          <% else %>
+            <td><%= link_to 'Mark Done', todo_path(todo, todo: { :done => 1 }), :method => :put %></td>
+          <% end %>
+        </td>
       </tr>
     <% end %>
-  </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Todo', new_todo_path %>
